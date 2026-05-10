@@ -50,7 +50,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1" },
-      { name: "theme-color", content: "#0f1420" },
+      { name: "theme-color", content: "#ffffff" },
       { title: "Pulse — MARTA, predicted." },
       { name: "description", content: "The MARTA companion that knows where you're going. Live tracking, fare-aware routing, one-tap share." },
       { property: "og:title", content: "Pulse — MARTA, predicted." },
