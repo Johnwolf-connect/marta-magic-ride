@@ -209,43 +209,76 @@ export interface NearbyVehicle {
   kind: "rail" | "bus";
   line?: RailLine;
   routeNumber?: string;
+  routeName?: string;
   headsign: string;
   // normalized 0-1 within map viewport
   x: number;
   y: number;
   occupancy: "low" | "medium" | "high";
+  etaMinutes: number;
+  takeoffAt: string;
+  arrivalAt: string;
+  stop: string;
 }
 
-export function getNearbyVehicles(now = new Date()): NearbyVehicle[] {
+export function getNearbyVehicles(now = new Date(), query = ""): NearbyVehicle[] {
   const m = now.getMinutes();
+  const q = query.trim().toLowerCase();
   const lines: RailLine[] = ["RED", "GOLD", "BLUE", "GREEN"];
   const vehicles: NearbyVehicle[] = [];
   lines.forEach((line, i) => {
     for (let k = 0; k < 2; k++) {
       const r = seeded(m + i * 9 + k * 31);
+      const eta = 1 + Math.floor(r * 12);
+      const trip = 12 + Math.floor(r * 20);
+      const takeoff = addMinutes(now, eta);
+      const arrival = addMinutes(takeoff, trip);
       vehicles.push({
         id: `${line[0]}${100 + Math.floor(r * 99)}`,
         kind: "rail",
         line,
+        routeName: LINE_META[line].name,
         headsign: line === "RED" ? "North Springs" : line === "GOLD" ? "Doraville" : line === "BLUE" ? "Indian Creek" : "Bankhead",
+        stop: STATIONS[Math.floor(r * STATIONS.length)],
         x: 0.1 + r * 0.8,
         y: 0.15 + seeded(m + i * 5 + k) * 0.7,
         occupancy: r > 0.66 ? "high" : r > 0.33 ? "medium" : "low",
+        etaMinutes: eta,
+        takeoffAt: fmtTime(takeoff),
+        arrivalAt: fmtTime(arrival),
       });
     }
   });
-  BUS_ROUTES.slice(0, 4).forEach((b, i) => {
+  BUS_ROUTES.forEach((b, i) => {
     const r = seeded(m + 200 + i * 17);
+    const eta = 2 + Math.floor(r * 14);
+    const trip = 16 + Math.floor(r * 24);
+    const takeoff = addMinutes(now, eta);
+    const arrival = addMinutes(takeoff, trip);
     vehicles.push({
       id: `B${b.num}`,
       kind: "bus",
       routeNumber: b.num,
+      routeName: `Route ${b.num} · ${b.name}`,
       headsign: b.head,
+      stop: STATIONS[Math.floor(r * STATIONS.length)],
       x: 0.08 + r * 0.85,
       y: 0.1 + seeded(m + 300 + i) * 0.78,
       occupancy: r > 0.5 ? "medium" : "low",
+      etaMinutes: eta,
+      takeoffAt: fmtTime(takeoff),
+      arrivalAt: fmtTime(arrival),
     });
   });
-  return vehicles;
+  const filtered = q
+    ? vehicles.filter(v =>
+        (v.routeName ?? "").toLowerCase().includes(q) ||
+        v.headsign.toLowerCase().includes(q) ||
+        v.stop.toLowerCase().includes(q) ||
+        (v.routeNumber ?? "").toLowerCase().includes(q)
+      )
+    : vehicles;
+  return filtered.sort((a, b) => a.etaMinutes - b.etaMinutes);
 }
+
 
