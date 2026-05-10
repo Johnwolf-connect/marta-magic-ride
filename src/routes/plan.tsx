@@ -142,7 +142,7 @@ function NearbyRow({ route, onPick }: { route: NearbyRoute; onPick: () => void }
           )}
         </div>
         <p className="truncate text-xs text-muted-foreground">→ {route.headsign} · {route.stop}</p>
-        <div className="mt-1 flex items-center gap-2 text-[11px] text-muted-foreground">
+        <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px] text-muted-foreground">
           <span className="inline-flex items-center gap-1">
             <span className="h-1.5 w-1.5 rounded-full" style={{ background: occColor }} />
             {route.occupancy}
@@ -152,6 +152,11 @@ function NearbyRow({ route, onPick }: { route: NearbyRoute; onPick: () => void }
           <span>·</span>
           <span className="font-medium text-foreground/80">{route.totalMinutes}m total</span>
         </div>
+        <p className="mt-1 text-[11px] tabular-nums">
+          <span className="font-semibold" style={{ color: "var(--marta-blue)" }}>Take off {route.takeoffAt}</span>
+          <span className="mx-1.5 text-muted-foreground">·</span>
+          <span className="font-semibold" style={{ color: "var(--marta-orange)" }}>Arr {route.arrivalAt}</span>
+        </p>
       </div>
 
       <div className="flex flex-col items-end">
