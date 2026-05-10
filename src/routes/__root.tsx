@@ -23,6 +23,7 @@ function MeComponent() {
   return (
     <div className="min-h-screen bg-white pb-20">
       <div className="max-w-xl mx-auto p-6 space-y-6">
+        <h1 className="text-3xl font-bold mb-8">Me Tab — Updated ✅</h1>
 
         {/* Profile */}
         <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
@@ -40,31 +41,13 @@ function MeComponent() {
             </div>
             <div className="text-4xl">🏆</div>
           </div>
-
-          <div className="grid grid-cols-3 gap-4 mt-8 text-center border-t pt-6">
-            <div>
-              <div className="text-xs text-gray-500">STREAK</div>
-              <div className="text-3xl font-bold">7 days</div>
-            </div>
-            <div>
-              <div className="text-xs text-gray-500">CO₂</div>
-              <div className="text-3xl font-bold text-green-600">14kg</div>
-            </div>
-            <div>
-              <div className="text-xs text-gray-500">TRIPS</div>
-              <div className="text-3xl font-bold">42</div>
-            </div>
-          </div>
         </div>
 
         {/* Breeze Balance */}
         <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <span className="text-3xl">💳</span>
-            <div>
-              <p className="text-sm text-gray-500">BREEZE BALANCE</p>
-              <p className="text-4xl font-semibold">${balance.toFixed(2)}</p>
-            </div>
+          <div>
+            <p className="text-sm text-gray-500">BREEZE BALANCE</p>
+            <p className="text-4xl font-semibold">${balance.toFixed(2)}</p>
           </div>
           <button className="bg-black text-white px-8 py-3 rounded-2xl font-medium">Top up</button>
         </div>
@@ -93,25 +76,18 @@ function MeComponent() {
                       <p className="text-sm text-gray-500">{fav.address}</p>
                     </div>
                   </div>
-                  <button
-                    onClick={() => handleDelete(fav.id)}
-                    className="text-orange-500 text-2xl opacity-0 group-hover:opacity-100"
-                  >
-                    ✕
-                  </button>
+                  <button onClick={() => handleDelete(fav.id)} className="text-orange-500 text-2xl">✕</button>
                 </div>
               ))}
             </div>
           )}
         </div>
-
-        <p className="text-center text-gray-400 mt-12">Recent trips will appear here soon</p>
       </div>
     </div>
   );
 }
 
-// This is the critical part that was missing
+// This line is required for TanStack Router
 export const Route = createFileRoute('/me')({
   component: MeComponent,
 });
