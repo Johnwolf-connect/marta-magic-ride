@@ -1,9 +1,10 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import { Map, Train, User } from "lucide-react";
+import { Map, MapPin, Train, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const items = [
-  { to: "/plan", label: "Plan", Icon: Map },
+  { to: "/plan", label: "Plan", Icon: MapPin },
+  { to: "/map",  label: "Map",  Icon: Map },
   { to: "/ride", label: "Ride", Icon: Train },
   { to: "/me",   label: "Me",   Icon: User },
 ] as const;
