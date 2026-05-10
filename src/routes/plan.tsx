@@ -91,7 +91,12 @@ function PlanPage() {
 }
 
 function NearbySection({ from, to, onPick }: { from: string; to: string; onPick: (r: NearbyRoute) => void }) {
-  const nearby = useMemo(() => getNearbyRoutes(from, to || "Anywhere"), [from, to]);
+  const [now, setNow] = useState(() => new Date());
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 5000);
+    return () => clearInterval(id);
+  }, []);
+  const nearby = useMemo(() => getNearbyRoutes(from, to || "Anywhere", now), [from, to, now]);
   return (
     <div className="mt-8">
       <div className="mb-3 flex items-end justify-between px-1">
