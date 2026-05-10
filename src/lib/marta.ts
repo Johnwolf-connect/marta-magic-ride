@@ -115,3 +115,114 @@ export function planRoutes(from: string, to: string): RouteOption[] {
     },
   ];
 }
+
+export interface NearbyRoute {
+  id: string;
+  kind: "rail" | "bus";
+  line?: RailLine;
+  routeNumber?: string;
+  name: string;
+  headsign: string;
+  stop: string;
+  walkMinutes: number;
+  arrivesInMinutes: number;
+  totalMinutes: number;
+  occupancy: "low" | "medium" | "high";
+  direct: boolean;
+}
+
+const BUS_ROUTES = [
+  { num: "110", name: "The Peach", head: "Downtown ↔ Lenox" },
+  { num: "16",  name: "Noble",     head: "Arts Center ↔ Decatur" },
+  { num: "2",   name: "Ponce",     head: "North Ave ↔ Avondale" },
+  { num: "39",  name: "Buford Hwy", head: "Lindbergh ↔ Doraville" },
+  { num: "55",  name: "Jonesboro Rd", head: "Five Points ↔ Airport" },
+];
+
+export function getNearbyRoutes(from: string, to: string, now = new Date()): NearbyRoute[] {
+  const seedBase = (from + "→" + to).split("").reduce((a, c) => a + c.charCodeAt(0), 0) + now.getMinutes();
+  const lines: RailLine[] = ["BLUE", "GOLD", "RED", "GREEN"];
+  const out: NearbyRoute[] = [];
+
+  lines.forEach((line, i) => {
+    const r = seeded(seedBase + i * 7);
+    out.push({
+      id: `rail-${line}-${i}`,
+      kind: "rail",
+      line,
+      name: LINE_META[line].name,
+      headsign: line === "RED" ? "North Springs" : line === "GOLD" ? "Doraville" : line === "BLUE" ? "Indian Creek" : "Bankhead",
+      stop: STATIONS[Math.floor(r * STATIONS.length)],
+      walkMinutes: 2 + Math.floor(r * 6),
+      arrivesInMinutes: 1 + Math.floor(r * 9),
+      totalMinutes: 14 + Math.floor(r * 18),
+      occupancy: r > 0.66 ? "high" : r > 0.33 ? "medium" : "low",
+      direct: i < 2,
+    });
+  });
+
+  BUS_ROUTES.forEach((b, i) => {
+    const r = seeded(seedBase + 100 + i * 11);
+    out.push({
+      id: `bus-${b.num}`,
+      kind: "bus",
+      routeNumber: b.num,
+      name: `Route ${b.num} · ${b.name}`,
+      headsign: b.head,
+      stop: STATIONS[Math.floor(r * STATIONS.length)],
+      walkMinutes: 1 + Math.floor(r * 8),
+      arrivesInMinutes: 2 + Math.floor(r * 12),
+      totalMinutes: 18 + Math.floor(r * 22),
+      occupancy: r > 0.66 ? "high" : r > 0.33 ? "medium" : "low",
+      direct: i % 2 === 0,
+    });
+  });
+
+  return out.sort((a, b) => (a.arrivesInMinutes + a.walkMinutes) - (b.arrivesInMinutes + b.walkMinutes));
+}
+
+export interface NearbyVehicle {
+  id: string;
+  kind: "rail" | "bus";
+  line?: RailLine;
+  routeNumber?: string;
+  headsign: string;
+  // normalized 0-1 within map viewport
+  x: number;
+  y: number;
+  occupancy: "low" | "medium" | "high";
+}
+
+export function getNearbyVehicles(now = new Date()): NearbyVehicle[] {
+  const m = now.getMinutes();
+  const lines: RailLine[] = ["RED", "GOLD", "BLUE", "GREEN"];
+  const vehicles: NearbyVehicle[] = [];
+  lines.forEach((line, i) => {
+    for (let k = 0; k < 2; k++) {
+      const r = seeded(m + i * 9 + k * 31);
+      vehicles.push({
+        id: `${line[0]}${100 + Math.floor(r * 99)}`,
+        kind: "rail",
+        line,
+        headsign: line === "RED" ? "North Springs" : line === "GOLD" ? "Doraville" : line === "BLUE" ? "Indian Creek" : "Bankhead",
+        x: 0.1 + r * 0.8,
+        y: 0.15 + seeded(m + i * 5 + k) * 0.7,
+        occupancy: r > 0.66 ? "high" : r > 0.33 ? "medium" : "low",
+      });
+    }
+  });
+  BUS_ROUTES.slice(0, 4).forEach((b, i) => {
+    const r = seeded(m + 200 + i * 17);
+    vehicles.push({
+      id: `B${b.num}`,
+      kind: "bus",
+      routeNumber: b.num,
+      headsign: b.head,
+      x: 0.08 + r * 0.85,
+      y: 0.1 + seeded(m + 300 + i) * 0.78,
+      occupancy: r > 0.5 ? "medium" : "low",
+    });
+  });
+  return vehicles;
+}
+
