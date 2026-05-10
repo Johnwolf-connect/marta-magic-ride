@@ -29,7 +29,7 @@ function MeComponent() {
           <div className="flex items-center gap-4">
             <div className="relative">
               <div className="w-20 h-20 bg-blue-100 rounded-2xl flex items-center justify-center text-5xl font-semibold text-blue-600">J</div>
-              <button className="absolute -bottom-1 -right-1 bg-white rounded-full p-1 shadow text-blue-600 border border-gray-200">✏️</button>
+              <button className="absolute -bottom-1 -right-1 bg-white rounded-full p-1 shadow text-blue-600 border">✏️</button>
             </div>
             <div className="flex-1">
               <div className="flex items-center gap-2">
@@ -111,6 +111,7 @@ function MeComponent() {
   );
 }
 
+// This is the critical part that was missing
 export const Route = createFileRoute('/me')({
   component: MeComponent,
 });
