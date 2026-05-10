@@ -24,12 +24,12 @@ export function BottomNav() {
                 key={to}
                 to={to}
                 className={cn(
-                  "tap-target flex flex-1 flex-col items-center gap-0.5 rounded-2xl px-3 py-2 transition-all duration-300",
-                  active ? "bg-secondary text-foreground" : "text-muted-foreground hover:text-foreground"
+                  "tap-target flex flex-1 flex-col items-center gap-1 rounded-2xl px-3 py-2 transition-all duration-300",
+                  active ? "text-primary" : "text-muted-foreground hover:text-foreground"
                 )}
               >
-                <Icon className={cn("h-5 w-5 transition-transform", active && "scale-110")} strokeWidth={active ? 2.4 : 2} />
-                <span className="text-[10px] font-medium tracking-wide">{label}</span>
+                <Icon className={cn("h-7 w-7 transition-transform", active && "scale-110 drop-shadow-[0_0_10px_rgba(0,149,254,0.45)]")} strokeWidth={active ? 2.4 : 2} />
+                <span className="text-[11px] font-semibold tracking-wide">{label}</span>
               </Link>
             );
           })}
