@@ -15,6 +15,7 @@ import { Route as MeRouteImport } from './routes/me'
 import { Route as MapRouteImport } from './routes/map'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as VehicleIdRouteImport } from './routes/vehicle.$id'
 
 const RideRoute = RideRouteImport.update({
   id: '/ride',
@@ -46,6 +47,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const VehicleIdRoute = VehicleIdRouteImport.update({
+  id: '/vehicle/$id',
+  path: '/vehicle/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -54,6 +60,7 @@ export interface FileRoutesByFullPath {
   '/me': typeof MeRoute
   '/plan': typeof PlanRoute
   '/ride': typeof RideRoute
+  '/vehicle/$id': typeof VehicleIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -62,6 +69,7 @@ export interface FileRoutesByTo {
   '/me': typeof MeRoute
   '/plan': typeof PlanRoute
   '/ride': typeof RideRoute
+  '/vehicle/$id': typeof VehicleIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -71,13 +79,29 @@ export interface FileRoutesById {
   '/me': typeof MeRoute
   '/plan': typeof PlanRoute
   '/ride': typeof RideRoute
+  '/vehicle/$id': typeof VehicleIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/map' | '/me' | '/plan' | '/ride'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/map'
+    | '/me'
+    | '/plan'
+    | '/ride'
+    | '/vehicle/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/map' | '/me' | '/plan' | '/ride'
-  id: '__root__' | '/' | '/login' | '/map' | '/me' | '/plan' | '/ride'
+  to: '/' | '/login' | '/map' | '/me' | '/plan' | '/ride' | '/vehicle/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/login'
+    | '/map'
+    | '/me'
+    | '/plan'
+    | '/ride'
+    | '/vehicle/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -87,6 +111,7 @@ export interface RootRouteChildren {
   MeRoute: typeof MeRoute
   PlanRoute: typeof PlanRoute
   RideRoute: typeof RideRoute
+  VehicleIdRoute: typeof VehicleIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -133,6 +158,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/vehicle/$id': {
+      id: '/vehicle/$id'
+      path: '/vehicle/$id'
+      fullPath: '/vehicle/$id'
+      preLoaderRoute: typeof VehicleIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -143,7 +175,18 @@ const rootRouteChildren: RootRouteChildren = {
   MeRoute: MeRoute,
   PlanRoute: PlanRoute,
   RideRoute: RideRoute,
+  VehicleIdRoute: VehicleIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
