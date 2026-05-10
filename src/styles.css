@@ -6,8 +6,10 @@
 
 /*
  * Pulse — MARTA companion design system.
- * MARTA rail line colors are used as glowing accents only, never as fills.
- * Surfaces stay calm; rail colors signal motion + identity.
+ * Light, white-first. MARTA brand colors as glowing accents only.
+ *  - Primary: Pantone Process Blue (#0095FE)
+ *  - Highlights: Pantone 123 yellow (#FFC72C), Pantone 151 orange (#FF8200)
+ *  - Rail line accents: Red(151 orange), Gold(123 yellow), Blue(Process Blue), Green
  */
 
 @theme inline {
@@ -42,6 +44,8 @@
   --color-marta-gold: var(--marta-gold);
   --color-marta-blue: var(--marta-blue);
   --color-marta-green: var(--marta-green);
+  --color-marta-orange: var(--marta-orange);
+  --color-marta-yellow: var(--marta-yellow);
 
   --color-success: var(--success);
   --color-warning: var(--warning);
@@ -52,110 +56,78 @@
 :root {
   --radius: 1.25rem;
 
-  --background: oklch(0.985 0.005 250);
-  --foreground: oklch(0.18 0.02 260);
+  /* Pure white surface */
+  --background: #ffffff;
+  --foreground: oklch(0.16 0.02 260);
 
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.18 0.02 260);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.18 0.02 260);
+  --card: #ffffff;
+  --card-foreground: oklch(0.16 0.02 260);
+  --popover: #ffffff;
+  --popover-foreground: oklch(0.16 0.02 260);
 
-  --primary: oklch(0.22 0.03 260);
-  --primary-foreground: oklch(0.985 0 0);
+  /* Primary = MARTA Process Blue */
+  --primary: #0095FE;
+  --primary-foreground: #ffffff;
 
-  --secondary: oklch(0.96 0.01 250);
-  --secondary-foreground: oklch(0.22 0.03 260);
+  --secondary: oklch(0.97 0.005 250);
+  --secondary-foreground: oklch(0.18 0.02 260);
 
-  --muted: oklch(0.95 0.01 250);
-  --muted-foreground: oklch(0.5 0.02 260);
+  --muted: oklch(0.97 0.005 250);
+  --muted-foreground: oklch(0.48 0.02 260);
 
-  --accent: oklch(0.94 0.02 250);
-  --accent-foreground: oklch(0.22 0.03 260);
+  --accent: oklch(0.96 0.02 240);
+  --accent-foreground: oklch(0.18 0.02 260);
 
-  --destructive: oklch(0.62 0.22 25);
-  --destructive-foreground: oklch(0.985 0 0);
+  --destructive: #FF8200;
+  --destructive-foreground: #ffffff;
 
-  --border: oklch(0.92 0.01 250);
-  --input: oklch(0.92 0.01 250);
-  --ring: oklch(0.7 0.05 255);
+  --border: oklch(0.92 0.005 250);
+  --input: oklch(0.94 0.005 250);
+  --ring: #0095FE;
 
-  /* MARTA rail lines */
-  --marta-red: oklch(0.6 0.22 25);
-  --marta-gold: oklch(0.78 0.15 85);
-  --marta-blue: oklch(0.55 0.18 250);
-  --marta-green: oklch(0.65 0.18 150);
+  /* MARTA brand exact */
+  --marta-blue: #0095FE;     /* Process Blue */
+  --marta-yellow: #FFC72C;   /* Pantone 123 */
+  --marta-orange: #FF8200;   /* Pantone 151 */
+  --marta-green: #00A651;
 
-  --success: oklch(0.65 0.18 150);
-  --warning: oklch(0.78 0.15 85);
+  /* Rail line tokens reuse brand palette */
+  --marta-red: #FF8200;      /* MARTA Red Line — uses Pantone 151 */
+  --marta-gold: #FFC72C;     /* MARTA Gold Line — uses Pantone 123 */
 
-  /* Semantic effects */
-  --gradient-hero: linear-gradient(140deg, oklch(0.22 0.03 260) 0%, oklch(0.18 0.04 270) 100%);
-  --gradient-pulse: radial-gradient(circle at 30% 20%, oklch(0.55 0.18 250 / 0.35), transparent 60%),
-                    radial-gradient(circle at 80% 90%, oklch(0.6 0.22 25 / 0.25), transparent 60%);
-  --shadow-card: 0 1px 2px oklch(0.2 0.02 260 / 0.04), 0 8px 24px -8px oklch(0.2 0.02 260 / 0.12);
-  --shadow-glow-red: 0 0 0 1px oklch(0.6 0.22 25 / 0.3), 0 8px 32px -4px oklch(0.6 0.22 25 / 0.4);
-  --shadow-glow-gold: 0 0 0 1px oklch(0.78 0.15 85 / 0.3), 0 8px 32px -4px oklch(0.78 0.15 85 / 0.4);
-  --shadow-glow-blue: 0 0 0 1px oklch(0.55 0.18 250 / 0.3), 0 8px 32px -4px oklch(0.55 0.18 250 / 0.4);
-  --shadow-glow-green: 0 0 0 1px oklch(0.65 0.18 150 / 0.3), 0 8px 32px -4px oklch(0.65 0.18 150 / 0.4);
-}
+  --success: #00A651;
+  --warning: #FFC72C;
 
-.dark {
-  --background: oklch(0.13 0.02 265);
-  --foreground: oklch(0.97 0.005 250);
+  --gradient-hero: linear-gradient(140deg, #0095FE 0%, #00C2FF 100%);
+  --gradient-pulse: radial-gradient(circle at 20% 0%, color-mix(in oklab, #0095FE 14%, transparent), transparent 55%),
+                    radial-gradient(circle at 100% 100%, color-mix(in oklab, #FFC72C 14%, transparent), transparent 60%);
 
-  --card: oklch(0.18 0.025 265);
-  --card-foreground: oklch(0.97 0.005 250);
-  --popover: oklch(0.18 0.025 265);
-  --popover-foreground: oklch(0.97 0.005 250);
-
-  --primary: oklch(0.97 0.005 250);
-  --primary-foreground: oklch(0.18 0.025 265);
-
-  --secondary: oklch(0.22 0.025 265);
-  --secondary-foreground: oklch(0.97 0.005 250);
-
-  --muted: oklch(0.22 0.025 265);
-  --muted-foreground: oklch(0.7 0.02 255);
-
-  --accent: oklch(0.25 0.03 265);
-  --accent-foreground: oklch(0.97 0.005 250);
-
-  --destructive: oklch(0.65 0.22 25);
-  --destructive-foreground: oklch(0.97 0.005 250);
-
-  --border: oklch(1 0 0 / 8%);
-  --input: oklch(1 0 0 / 12%);
-  --ring: oklch(0.55 0.05 260);
-
-  --marta-red: oklch(0.68 0.22 25);
-  --marta-gold: oklch(0.82 0.16 85);
-  --marta-blue: oklch(0.65 0.2 250);
-  --marta-green: oklch(0.72 0.18 150);
-
-  --success: oklch(0.72 0.18 150);
-  --warning: oklch(0.82 0.16 85);
-
-  --gradient-hero: linear-gradient(140deg, oklch(0.16 0.03 265) 0%, oklch(0.1 0.04 275) 100%);
-  --shadow-card: 0 1px 2px oklch(0 0 0 / 0.4), 0 12px 32px -8px oklch(0 0 0 / 0.5);
+  --shadow-card: 0 1px 2px oklch(0.2 0.02 260 / 0.04), 0 8px 24px -10px oklch(0.2 0.02 260 / 0.08);
+  --shadow-glow-blue:   0 0 0 1px color-mix(in oklab, #0095FE 25%, transparent), 0 12px 32px -6px color-mix(in oklab, #0095FE 35%, transparent);
+  --shadow-glow-gold:   0 0 0 1px color-mix(in oklab, #FFC72C 30%, transparent), 0 12px 32px -6px color-mix(in oklab, #FFC72C 40%, transparent);
+  --shadow-glow-orange: 0 0 0 1px color-mix(in oklab, #FF8200 25%, transparent), 0 12px 32px -6px color-mix(in oklab, #FF8200 35%, transparent);
+  --shadow-glow-green:  0 0 0 1px color-mix(in oklab, #00A651 25%, transparent), 0 12px 32px -6px color-mix(in oklab, #00A651 35%, transparent);
+  --shadow-glow-red:    var(--shadow-glow-orange);
 }
 
 @layer base {
   * { border-color: var(--color-border); }
-  html, body, #root { height: 100%; }
+  html, body, #root { height: 100%; background: #ffffff; }
   body {
-    background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-display);
     -webkit-font-smoothing: antialiased;
     overscroll-behavior-y: none;
+    letter-spacing: -0.01em;
   }
 }
 
 @layer utilities {
-  .glow-red    { box-shadow: var(--shadow-glow-red); }
+  .glow-red    { box-shadow: var(--shadow-glow-orange); }
   .glow-gold   { box-shadow: var(--shadow-glow-gold); }
   .glow-blue   { box-shadow: var(--shadow-glow-blue); }
   .glow-green  { box-shadow: var(--shadow-glow-green); }
+  .glow-orange { box-shadow: var(--shadow-glow-orange); }
   .pulse-card  { box-shadow: var(--shadow-card); }
   .gradient-hero  { background: var(--gradient-hero); }
   .gradient-pulse { background: var(--gradient-pulse); }
@@ -165,8 +137,8 @@
 
   @keyframes pulse-ring {
     0%   { transform: scale(0.95); opacity: 0.7; }
-    70%  { transform: scale(1.4); opacity: 0; }
-    100% { transform: scale(1.4); opacity: 0; }
+    70%  { transform: scale(1.5); opacity: 0; }
+    100% { transform: scale(1.5); opacity: 0; }
   }
   .animate-pulse-ring { animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
 
@@ -181,7 +153,7 @@
     100% { background-position:  200% 0; }
   }
   .shimmer {
-    background: linear-gradient(90deg, transparent, oklch(1 0 0 / 0.06), transparent);
+    background: linear-gradient(90deg, transparent, oklch(0.2 0.02 260 / 0.06), transparent);
     background-size: 200% 100%;
     animation: shimmer 2s linear infinite;
   }
