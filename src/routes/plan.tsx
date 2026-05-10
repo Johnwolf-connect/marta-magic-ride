@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ArrowRight, Briefcase, Bus, Home, Leaf, MapPin, Plane, Search, Share2, Train, Wallet, Zap } from "lucide-react";
 import { getNearbyRoutes, LINE_META, planRoutes, type NearbyRoute, type RouteOption } from "@/lib/marta";
 import { cn } from "@/lib/utils";
