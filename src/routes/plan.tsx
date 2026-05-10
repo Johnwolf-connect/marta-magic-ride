@@ -81,7 +81,79 @@ function PlanPage() {
           ))}
         </div>
       </div>
+
+      <NearbySection from={from} to={to} onPick={(r) => {
+        toast.success(`Selected ${r.kind === "rail" ? r.name : "Bus " + r.routeNumber}`);
+        navigate({ to: "/ride" });
+      }} />
     </div>
+  );
+}
+
+function NearbySection({ from, to, onPick }: { from: string; to: string; onPick: (r: NearbyRoute) => void }) {
+  const nearby = useMemo(() => getNearbyRoutes(from, to || "Anywhere"), [from, to]);
+  return (
+    <div className="mt-8">
+      <div className="mb-3 flex items-end justify-between px-1">
+        <div>
+          <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Live nearby</p>
+          <h2 className="mt-0.5 text-lg font-semibold tracking-tight">Nearby & Direct Options</h2>
+        </div>
+        <span className="text-xs text-muted-foreground">{nearby.length} live</span>
+      </div>
+
+      <div className="space-y-2.5">
+        {nearby.slice(0, 8).map((r) => (
+          <NearbyRow key={r.id} route={r} onPick={() => onPick(r)} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function NearbyRow({ route, onPick }: { route: NearbyRoute; onPick: () => void }) {
+  const color = route.kind === "rail" && route.line ? LINE_META[route.line].token : "var(--marta-orange)";
+  const occColor = route.occupancy === "low" ? "var(--marta-green)" : route.occupancy === "medium" ? "var(--marta-yellow)" : "var(--marta-orange)";
+  return (
+    <button
+      onClick={onPick}
+      className="group flex w-full items-center gap-3 rounded-2xl border border-border bg-card p-3.5 text-left transition-all active:scale-[0.99] pulse-card"
+    >
+      <div
+        className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-white font-bold"
+        style={{ background: color, boxShadow: `0 6px 18px -6px ${color}` }}
+      >
+        {route.kind === "rail" ? <Train className="h-5 w-5" /> : <span className="text-sm">{route.routeNumber}</span>}
+      </div>
+
+      <div className="min-w-0 flex-1">
+        <div className="flex items-center gap-2">
+          <p className="truncate text-sm font-semibold">{route.name}</p>
+          {route.direct && (
+            <span className="rounded-full px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider"
+                  style={{ background: "color-mix(in oklab, var(--marta-blue) 14%, transparent)", color: "var(--marta-blue)" }}>
+              Direct
+            </span>
+          )}
+        </div>
+        <p className="truncate text-xs text-muted-foreground">→ {route.headsign} · {route.stop}</p>
+        <div className="mt-1 flex items-center gap-2 text-[11px] text-muted-foreground">
+          <span className="inline-flex items-center gap-1">
+            <span className="h-1.5 w-1.5 rounded-full" style={{ background: occColor }} />
+            {route.occupancy}
+          </span>
+          <span>·</span>
+          <span>{route.walkMinutes}m walk</span>
+          <span>·</span>
+          <span className="font-medium text-foreground/80">{route.totalMinutes}m total</span>
+        </div>
+      </div>
+
+      <div className="flex flex-col items-end">
+        <span className="text-lg font-bold tabular-nums" style={{ color: "var(--marta-blue)" }}>{route.arrivesInMinutes}</span>
+        <span className="text-[10px] uppercase tracking-wider text-muted-foreground">min</span>
+      </div>
+    </button>
   );
 }
 
