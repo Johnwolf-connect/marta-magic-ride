@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as RideRouteImport } from './routes/ride'
 import { Route as PlanRouteImport } from './routes/plan'
 import { Route as MeRouteImport } from './routes/me'
+import { Route as MapRouteImport } from './routes/map'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as IndexRouteImport } from './routes/index'
 
@@ -30,6 +31,11 @@ const MeRoute = MeRouteImport.update({
   path: '/me',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MapRoute = MapRouteImport.update({
+  id: '/map',
+  path: '/map',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -44,6 +50,7 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/map': typeof MapRoute
   '/me': typeof MeRoute
   '/plan': typeof PlanRoute
   '/ride': typeof RideRoute
@@ -51,6 +58,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/map': typeof MapRoute
   '/me': typeof MeRoute
   '/plan': typeof PlanRoute
   '/ride': typeof RideRoute
@@ -59,21 +67,23 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/map': typeof MapRoute
   '/me': typeof MeRoute
   '/plan': typeof PlanRoute
   '/ride': typeof RideRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/me' | '/plan' | '/ride'
+  fullPaths: '/' | '/login' | '/map' | '/me' | '/plan' | '/ride'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/me' | '/plan' | '/ride'
-  id: '__root__' | '/' | '/login' | '/me' | '/plan' | '/ride'
+  to: '/' | '/login' | '/map' | '/me' | '/plan' | '/ride'
+  id: '__root__' | '/' | '/login' | '/map' | '/me' | '/plan' | '/ride'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   LoginRoute: typeof LoginRoute
+  MapRoute: typeof MapRoute
   MeRoute: typeof MeRoute
   PlanRoute: typeof PlanRoute
   RideRoute: typeof RideRoute
@@ -102,6 +112,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/map': {
+      id: '/map'
+      path: '/map'
+      fullPath: '/map'
+      preLoaderRoute: typeof MapRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -122,6 +139,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LoginRoute: LoginRoute,
+  MapRoute: MapRoute,
   MeRoute: MeRoute,
   PlanRoute: PlanRoute,
   RideRoute: RideRoute,
