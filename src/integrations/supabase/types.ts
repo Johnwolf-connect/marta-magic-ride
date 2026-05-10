@@ -14,7 +14,147 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      favorites: {
+        Row: {
+          address: string
+          created_at: string
+          icon: string
+          id: string
+          label: string
+          lat: number | null
+          lng: number | null
+          sort_order: number
+          user_id: string
+        }
+        Insert: {
+          address: string
+          created_at?: string
+          icon?: string
+          id?: string
+          label: string
+          lat?: number | null
+          lng?: number | null
+          sort_order?: number
+          user_id: string
+        }
+        Update: {
+          address?: string
+          created_at?: string
+          icon?: string
+          id?: string
+          label?: string
+          lat?: number | null
+          lng?: number | null
+          sort_order?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          breeze_balance: number
+          carbon_score: number
+          created_at: string
+          display_name: string | null
+          id: string
+          ride_streak: number
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          breeze_balance?: number
+          carbon_score?: number
+          created_at?: string
+          display_name?: string | null
+          id: string
+          ride_streak?: number
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          breeze_balance?: number
+          carbon_score?: number
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          ride_streak?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      routines: {
+        Row: {
+          count: number
+          day_of_week: number | null
+          destination: string
+          hour_of_day: number | null
+          id: string
+          last_seen: string
+          origin: string
+          user_id: string
+        }
+        Insert: {
+          count?: number
+          day_of_week?: number | null
+          destination: string
+          hour_of_day?: number | null
+          id?: string
+          last_seen?: string
+          origin: string
+          user_id: string
+        }
+        Update: {
+          count?: number
+          day_of_week?: number | null
+          destination?: string
+          hour_of_day?: number | null
+          id?: string
+          last_seen?: string
+          origin?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      trip_history: {
+        Row: {
+          carbon_saved_kg: number
+          destination: string
+          duration_minutes: number | null
+          ended_at: string | null
+          fare_cents: number
+          id: string
+          origin: string
+          route_line: string | null
+          started_at: string
+          user_id: string
+        }
+        Insert: {
+          carbon_saved_kg?: number
+          destination: string
+          duration_minutes?: number | null
+          ended_at?: string | null
+          fare_cents?: number
+          id?: string
+          origin: string
+          route_line?: string | null
+          started_at?: string
+          user_id: string
+        }
+        Update: {
+          carbon_saved_kg?: number
+          destination?: string
+          duration_minutes?: number | null
+          ended_at?: string | null
+          fare_cents?: number
+          id?: string
+          origin?: string
+          route_line?: string | null
+          started_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
