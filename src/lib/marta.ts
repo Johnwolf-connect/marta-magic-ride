@@ -155,6 +155,11 @@ export function getNearbyRoutes(from: string, to: string, now = new Date()): Nea
 
   lines.forEach((line, i) => {
     const r = seeded(seedBase + i * 7);
+    const walkMinutes = 2 + Math.floor(r * 6);
+    const arrivesInMinutes = 1 + Math.floor(r * 9);
+    const totalMinutes = 14 + Math.floor(r * 18);
+    const takeoff = addMinutes(now, arrivesInMinutes);
+    const arrival = addMinutes(takeoff, totalMinutes - arrivesInMinutes);
     out.push({
       id: `rail-${line}-${i}`,
       kind: "rail",
@@ -162,16 +167,23 @@ export function getNearbyRoutes(from: string, to: string, now = new Date()): Nea
       name: LINE_META[line].name,
       headsign: line === "RED" ? "North Springs" : line === "GOLD" ? "Doraville" : line === "BLUE" ? "Indian Creek" : "Bankhead",
       stop: STATIONS[Math.floor(r * STATIONS.length)],
-      walkMinutes: 2 + Math.floor(r * 6),
-      arrivesInMinutes: 1 + Math.floor(r * 9),
-      totalMinutes: 14 + Math.floor(r * 18),
+      walkMinutes,
+      arrivesInMinutes,
+      totalMinutes,
       occupancy: r > 0.66 ? "high" : r > 0.33 ? "medium" : "low",
       direct: i < 2,
+      takeoffAt: fmtTime(takeoff),
+      arrivalAt: fmtTime(arrival),
     });
   });
 
   BUS_ROUTES.forEach((b, i) => {
     const r = seeded(seedBase + 100 + i * 11);
+    const walkMinutes = 1 + Math.floor(r * 8);
+    const arrivesInMinutes = 2 + Math.floor(r * 12);
+    const totalMinutes = 18 + Math.floor(r * 22);
+    const takeoff = addMinutes(now, arrivesInMinutes);
+    const arrival = addMinutes(takeoff, totalMinutes - arrivesInMinutes);
     out.push({
       id: `bus-${b.num}`,
       kind: "bus",
@@ -179,11 +191,13 @@ export function getNearbyRoutes(from: string, to: string, now = new Date()): Nea
       name: `Route ${b.num} · ${b.name}`,
       headsign: b.head,
       stop: STATIONS[Math.floor(r * STATIONS.length)],
-      walkMinutes: 1 + Math.floor(r * 8),
-      arrivesInMinutes: 2 + Math.floor(r * 12),
-      totalMinutes: 18 + Math.floor(r * 22),
+      walkMinutes,
+      arrivesInMinutes,
+      totalMinutes,
       occupancy: r > 0.66 ? "high" : r > 0.33 ? "medium" : "low",
       direct: i % 2 === 0,
+      takeoffAt: fmtTime(takeoff),
+      arrivalAt: fmtTime(arrival),
     });
   });
 
