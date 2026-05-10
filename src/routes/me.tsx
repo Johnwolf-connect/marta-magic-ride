@@ -1,113 +1,139 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { Briefcase, ChevronRight, CreditCard, GripVertical, Home, LogOut, Plane, Trophy } from "lucide-react";
-import { useAuth } from "@/lib/use-auth";
-import { AuthGate } from "@/components/AuthGate";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
+import { useState } from 'react';
+import { Link } from '@tanstack/react-router';
 
-export const Route = createFileRoute("/me")({ component: MePage });
+export default function Me() {
+  const [balance] = useState(0.00);
+  const [favorites, setFavorites] = useState<any[]>([]);
+  const [name] = useState('John Wolf');
+  const [photo] = useState(null); // placeholder for future upload
 
-const MOCK_FAVS = [
-  { label: "Home",    address: "Inman Park",  Icon: Home },
-  { label: "Work",    address: "Midtown",     Icon: Briefcase },
-  { label: "Airport", address: "ATL Airport", Icon: Plane },
-];
+  const handleAddFavorite = () => {
+    // For now, just alert — we'll make the full flow next if you like
+    const type = prompt('Home, Work, or Place?', 'Home');
+    const address = prompt('Enter address or place name:');
+    if (type && address) {
+      setFavorites([...favorites, { id: Date.now(), type, address }]);
+    }
+  };
 
-function MePage() {
-  const { user, isAuthed, loading } = useAuth();
-
-  if (loading) return <div className="px-5 pt-12"><div className="h-32 rounded-3xl bg-card shimmer" /></div>;
+  const handleDeleteFavorite = (id: number) => {
+    if (confirm('Delete this favorite?')) {
+      setFavorites(favorites.filter(f => f.id !== id));
+    }
+  };
 
   return (
-    <div className="min-h-screen px-5 pt-12">
-      <h1 className="text-3xl font-semibold tracking-tight">Me</h1>
+    <div className="min-h-screen bg-white pb-20">
+      <div className="max-w-xl mx-auto p-6 space-y-6">
 
-      {!isAuthed ? (
-        <div className="mt-6"><AuthGate feature="favorites, history & live share" /></div>
-      ) : (
-        <>
-          {/* Profile card */}
-          <section className="mt-5 rounded-3xl border border-border bg-card p-5 pulse-card">
-            <div className="flex items-center gap-4">
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-secondary text-lg font-semibold">
-                {(user?.email?.[0] || "U").toUpperCase()}
+        {/* Profile Card */}
+        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
+          <div className="flex items-center gap-4">
+            <div className="relative">
+              <div className="w-20 h-20 bg-blue-100 rounded-2xl flex items-center justify-center text-4xl font-semibold text-blue-600">
+                {photo ? '📸' : 'J'}
               </div>
-              <div className="flex-1 min-w-0">
-                <p className="truncate text-base font-semibold">{user?.user_metadata?.display_name || user?.email}</p>
-                <p className="text-xs text-muted-foreground">Pulse member</p>
-              </div>
-              <Trophy className="h-5 w-5" style={{ color: "var(--marta-gold)" }} />
-            </div>
-
-            <div className="mt-5 grid grid-cols-3 gap-3 border-t border-border pt-4">
-              <Stat label="Streak" value="7" suffix="days" />
-              <Stat label="CO₂" value="14" suffix="kg" color="var(--marta-green)" />
-              <Stat label="Trips" value="42" />
-            </div>
-          </section>
-
-          {/* Breeze */}
-          <section className="mt-4 flex items-center gap-4 rounded-2xl border border-border bg-card p-4">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full" style={{ background: "var(--marta-blue)20", color: "var(--marta-blue)" }}>
-              <CreditCard className="h-4 w-4" />
+              <button className="absolute -bottom-1 -right-1 bg-white rounded-full p-1 shadow text-blue-600 border border-gray-200">
+                ✏️
+              </button>
             </div>
             <div className="flex-1">
-              <p className="text-xs uppercase tracking-wider text-muted-foreground">Breeze balance</p>
-              <p className="text-lg font-semibold">$12.50</p>
+              <div className="flex items-center gap-2">
+                <h2 className="text-2xl font-semibold">{name}</h2>
+                <button className="text-blue-600 text-xl">✏️</button>
+              </div>
+              <p className="text-sm text-gray-500">Pulse member</p>
             </div>
-            <button className="rounded-full bg-foreground px-4 py-2 text-xs font-medium text-background">Top up</button>
-          </section>
+            <div className="text-4xl">🏆</div>
+          </div>
 
-          {/* Favorites */}
-          <section className="mt-6">
-            <h2 className="px-1 text-xs font-medium uppercase tracking-wider text-muted-foreground">Favorites</h2>
-            <ul className="mt-2 space-y-2">
-              {MOCK_FAVS.map(({ label, address, Icon }) => (
-                <li key={label} className="flex items-center gap-3 rounded-2xl border border-border bg-card px-4 py-3">
-                  <GripVertical className="h-4 w-4 text-muted-foreground" />
-                  <Icon className="h-4 w-4" />
-                  <div className="flex-1">
-                    <p className="text-sm font-medium">{label}</p>
-                    <p className="text-xs text-muted-foreground">{address}</p>
+          <div className="grid grid-cols-3 gap-4 mt-8 text-center border-t pt-6">
+            <div>
+              <div className="text-xs text-gray-500">STREAK</div>
+              <div className="text-3xl font-bold">7 days</div>
+            </div>
+            <div>
+              <div className="text-xs text-gray-500">CO₂</div>
+              <div className="text-3xl font-bold text-green-600">14kg</div>
+            </div>
+            <div>
+              <div className="text-xs text-gray-500">TRIPS</div>
+              <div className="text-3xl font-bold">42</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Breeze Balance */}
+        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <span className="text-3xl">💳</span>
+            <div>
+              <p className="text-sm text-gray-500">BREEZE BALANCE</p>
+              <p className="text-4xl font-semibold">${balance.toFixed(2)}</p>
+            </div>
+          </div>
+          <button className="bg-black text-white px-8 py-3 rounded-2xl font-medium">Top up</button>
+        </div>
+
+        {/* Favorites */}
+        <div>
+          <div className="flex justify-between items-baseline mb-3">
+            <h3 className="font-semibold text-lg">Favorites</h3>
+          </div>
+
+          {favorites.length === 0 ? (
+            <div className="bg-white border border-dashed border-gray-300 rounded-3xl p-8 text-center">
+              <p className="text-gray-400">Favorites you add will appear here</p>
+              <button
+                onClick={handleAddFavorite}
+                className="mt-4 bg-blue-600 text-white px-6 py-3 rounded-2xl font-medium"
+              >
+                + Add Fav
+              </button>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {favorites.map((fav) => (
+                <div
+                  key={fav.id}
+                  className="bg-white rounded-2xl p-4 flex items-center justify-between group"
+                  onContextMenu={(e) => { e.preventDefault(); handleDeleteFavorite(fav.id); }}
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="text-xl">🏠</span>
+                    <div>
+                      <p className="font-medium">{fav.type}</p>
+                      <p className="text-sm text-gray-500">{fav.address}</p>
+                    </div>
                   </div>
-                  <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                </li>
+                  <button
+                    onClick={() => handleDeleteFavorite(fav.id)}
+                    className="opacity-0 group-hover:opacity-100 text-orange-500 text-xl px-3"
+                  >
+                    ✕
+                  </button>
+                </div>
               ))}
-            </ul>
-          </section>
+            </div>
+          )}
+        </div>
 
-          {/* Trip history teaser */}
-          <section className="mt-6">
-            <h2 className="px-1 text-xs font-medium uppercase tracking-wider text-muted-foreground">Recent trips</h2>
-            <ul className="mt-2 space-y-2">
-              {["Yesterday · Inman Park → Midtown", "Mon · Home → Airport", "Sun · Decatur → Five Points"].map((t) => (
-                <li key={t} className="flex items-center justify-between rounded-2xl border border-border bg-card px-4 py-3 text-sm">
-                  <span>{t}</span>
-                  <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                </li>
-              ))}
-            </ul>
-          </section>
+        {/* Recent Trips */}
+        <div className="mt-8">
+          <h3 className="font-semibold text-lg mb-3">Recent Trips</h3>
+          <p className="text-gray-400 text-center py-8">Your recent trips will appear here</p>
+        </div>
+      </div>
 
-          <button
-            onClick={async () => { await supabase.auth.signOut(); toast.success("Signed out"); }}
-            className="tap-target mt-8 mb-4 flex w-full items-center justify-center gap-2 rounded-full border border-border bg-card py-3 text-sm font-medium text-muted-foreground"
-          >
-            <LogOut className="h-4 w-4" /> Sign out
-          </button>
-        </>
-      )}
-    </div>
-  );
-}
-
-function Stat({ label, value, suffix, color }: { label: string; value: string; suffix?: string; color?: string }) {
-  return (
-    <div className="text-center">
-      <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{label}</p>
-      <p className="mt-1 text-xl font-semibold tabular-nums" style={color ? { color } : undefined}>
-        {value}{suffix && <span className="ml-0.5 text-xs font-normal text-muted-foreground">{suffix}</span>}
-      </p>
+      {/* Bottom Nav */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t">
+        <div className="max-w-xl mx-auto flex justify-around py-2">
+          <Link to="/" className="flex flex-col items-center text-gray-400">📍 Plan</Link>
+          <Link to="/map" className="flex flex-col items-center text-gray-400">🗺️ Map</Link>
+          <Link to="/ride" className="flex flex-col items-center text-gray-400">🚌 Ride</Link>
+          <Link to="/me" className="flex flex-col items-center text-blue-600">👤 Me</Link>
+        </div>
+      </div>
     </div>
   );
 }
