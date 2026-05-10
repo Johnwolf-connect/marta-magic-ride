@@ -129,6 +129,15 @@ export interface NearbyRoute {
   totalMinutes: number;
   occupancy: "low" | "medium" | "high";
   direct: boolean;
+  takeoffAt: string;
+  arrivalAt: string;
+}
+
+function fmtTime(d: Date) {
+  return d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+}
+function addMinutes(d: Date, m: number) {
+  return new Date(d.getTime() + m * 60_000);
 }
 
 const BUS_ROUTES = [
